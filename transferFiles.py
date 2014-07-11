@@ -35,4 +35,3 @@ for typeFolder in L:
                         if not os.path.exists(target+typeFolder+dateFolder):
                             os.makedirs(target+typeFolder+dateFolder)
                         shutil.copyfile( source + typeFolder  + dateFolder  + fileName,  target + typeFolder  + dateFolder  + fileName )
-                    
