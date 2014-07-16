@@ -317,7 +317,7 @@ if __name__ == '__main__':
         try:
             secs = int(argv[1])
             print 'sleeping %d seconds' % secs, 'from localtime', time.asctime()
-            print 'waking up at UTC', time.asctime(time.gmtime( time.time()+ secs ))
+            print 'waking up at localtime', time.asctime(time.localtime( time.time()+ secs ))
             time.sleep(secs)
             while True:
                 timeStart       = time.time()
@@ -330,8 +330,8 @@ if __name__ == '__main__':
                 main(url_date=url_date)
                 timeSpent   = int(time.time()) - timeStart
                 print "time spent", timeSpent
-                print 'sleeping', 86400-timeSpent, 'seconds, from localtime', time.asctime()
-                print 'waking up at UTC', time.asctime(time.gmtime( time.time()+ 86400-timeSpent ))
+                print 'sleeping', 86400-timeSpent, 'seconds, from localtime', time.asctime(time.localtime())
+                print 'waking up at local time', time.asctime(time.localtime( time.time()+ 86400-timeSpent ))
                 time.sleep(86400-timeSpent)
         except ValueError:
             for url_date in sys.argv[1:]:

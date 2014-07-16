@@ -7,7 +7,7 @@ source = "f:/CWB/"
 target = "d:/CWB/"
 typeKey = "charts"
 dryRun = False
-dateKey = ""
+dateKey = "2014-05-01"
 
 #
 ##########################
