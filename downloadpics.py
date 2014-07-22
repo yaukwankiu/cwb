@@ -190,10 +190,15 @@ url_info_list.append(Url_info("http://www.cwb.gov.tw/V7/observe/rainfall/Data/hq
                               ".jpg",
                               "hq",
                               "rainfall1"))
+#http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01",
+                              url_suffix=".pdf",
+                              outputFolder="fcst",
+                              timeStringType="fcst"))
 
 ########################################################################################
 # defining the functions
-def download(url, to_filename, url_date=url_date, folder=".", reload=defaultReloadMode):
+def download(url, to_filename, url_date=url_date, folder=".", reload=defaultReloadMode, verbose=False):
     ################
     # first, create the directory if it doesn't exist
     try: 
@@ -207,11 +212,12 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
     # check if to_path exists first!!!
     # added  2013-08-21
     if os.path.isfile(to_path) and reload==False:
-        print to_path, ' <--- already exists!!'
+        if verbose:
+            print to_path, ' <--- already exists!!'
         if os.path.getsize(to_path) >= 6000:
             return 0.5
         else:
-            print 'file broken! - removed'
+            print to_path,  'file broken! - removed'
     try:
         f = urllib.urlretrieve(url, to_path)
         if os.path.getsize(to_path) < 6000:
@@ -245,8 +251,13 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                 elif type == "rainfall1":           # "520100" for 2013-05-20 10:00 - the odd man out
                     timestring = ("0"+str(hour))[-2:] + str(minute)[0]
-
-                url = url_root + url_date + timestring + url_suffix
+                elif type =="fcst":
+                    timestring = ""                 # http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
+                    
+                if type =="fcst":
+                    url = url_root + timestring + url_suffix        #2014-07-22
+                else:
+                    url = url_root + url_date + timestring + url_suffix
 
                 if type == "rainfall1":           # "520153" for 2013-05-20 15:30, 
                                                   # "520010" for 2013-05-20 01:00, 
@@ -264,6 +275,7 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     #print url
                     #time.sleep(1)
                     #end debug
+
                 to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
                 download(url=url, to_filename=to_filename, url_date=url_date, folder=outputfolder)
     except:
