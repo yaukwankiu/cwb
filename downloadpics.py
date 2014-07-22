@@ -275,8 +275,10 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     #print url
                     #time.sleep(1)
                     #end debug
-
-                to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
+                if type == "fcst":
+                    to_filename = url_date +url_suffix      #2014-07-22
+                else:
+                    to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
                 download(url=url, to_filename=to_filename, url_date=url_date, folder=outputfolder)
     except:
         print "--------------------------------------------------------"
