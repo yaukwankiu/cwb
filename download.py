@@ -138,7 +138,12 @@ url_root10 = "http://www.cwb.gov.tw/V7/observe/satellite/Data/HSAO/HSAO-"
 url_suffix10= ".jpg"
 outputfolder10 = "hsao"
 timeStringType10         = "satellite"
+
+
 # 
+
+############################################################################################################################################
+#  charts
 
 url_info_list = []
 
@@ -196,6 +201,72 @@ url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst
                               outputFolder="fcst",
                               timeStringType="fcst"))
 
+#   2014-07-25
+
+#http://www.cwb.gov.tw/V7/observe/UVI/Data/UVI.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/UVI/Data/UVI",
+                              url_suffix=".png",
+                              outputFolder="uvi",
+                              timeStringType="fcst"))
+
+#http://www.cwb.gov.tw/V7/observe/real/Data/Real_C.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_C",
+                              url_suffix=".png",
+                              outputFolder="real_c",
+                              timeStringType="fcst"))
+                              
+#http://www.cwb.gov.tw/V7/observe/real/Data/Real_E.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_E",
+                              url_suffix=".png",
+                              outputFolder="real_e",
+                              timeStringType="fcst"))
+                              
+#http://www.cwb.gov.tw/V7/observe/real/Data/Real_I.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_I",
+                              url_suffix=".png",
+                              outputFolder="real_i",
+                              timeStringType="fcst"))
+                              
+#http://www.cwb.gov.tw/V7/observe/real/Data/Real_N.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_N",
+                              url_suffix=".png",
+                              outputFolder="real_n",
+                              timeStringType="fcst"))
+                              
+#http://www.cwb.gov.tw/V7/observe/real/Data/Real_S.png
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_S",
+                              url_suffix=".png",
+                              outputFolder="real_s",
+                              timeStringType="fcst"))
+
+
+#   end charts
+############################################################################################################################################
+
+############################################################################################################################################
+#   htmls
+
+# http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_P.html
+# http://www.cwb.gov.tw/V7/marine/sst_report/cht/charts/sea_B.png
+#   "A"~"P" = chr(65) ~ chr(80)
+regionalLetters = [chr(v) for v in range(65,81)]
+seaTemperatureCharts = []
+for ch in regionalLetters:
+    seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
+                                  url_suffix=".html",
+                                  outputFolder="sea_%s" %ch,
+                                  timeStringType="fcst"))
+
+    seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
+                                  url_suffix=".png",
+                                  outputFolder="sea_%s" %ch,
+                                  timeStringType="fcst"))
+
+
+url_info_list += seaTemperatureCharts
+#   end htmls
+############################################################################################################################################
+
 ########################################################################################
 # defining the functions
 def download(url, to_filename, url_date=url_date, folder=".", reload=defaultReloadMode, verbose=False):
@@ -222,7 +293,7 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
         f = urllib.urlretrieve(url, to_path)
         if os.path.getsize(to_path) < 6000:
             os.remove(to_path)
-            print to_path, 'not found ' + url
+            print url, '-->not found--> ' + to_path 
             returnvalue = 0
         else:
             print to_path, '- fetched!!!!!!!!!!!!!!!!!!!!!'
@@ -237,7 +308,8 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                  outputfolder=outputfolder, type="radar"):
     try:
         for hour in range(24):
-            for minute in [0, 7, 15, 22, 30, 37, 45,52 ]:
+            #for minute in [0, 7, 15, 22, 30, 37, 45,52 ]:
+            for minute in [0, 6, 12, 24, 30, 36, 42, 48, 54 ]:  #2014-07-25
                 #if (minute == 15 or minute ==45) and \
                 #    (type == "rainfall1" or type =="rainfall2" or type =="satellite"):
                 #    continue                        # no data
@@ -276,7 +348,8 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     #time.sleep(1)
                     #end debug
                 if type == "fcst":
-                    to_filename = "SFC01" + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-22
+                    #to_filename = "SFC01" + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-22
+                    to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-25
                 else:
                     to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
                 download(url=url, to_filename=to_filename, url_date=url_date, folder=outputfolder)
