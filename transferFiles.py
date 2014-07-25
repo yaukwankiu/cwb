@@ -1,24 +1,15 @@
 # from source /CWB/ folder to target /CWB/ folder
 
-##########################
-#   edit here: parameters
-#
-source = "f:/CWB/"
-target = "d:/CWB/"
-typeKey = "charts"
+source = "d:/CWB/"
+target = "f:/CWB/"
 dryRun = False
-dateKey = "2014-05-01"
-
-#
-##########################
-
 import os
 import shutil
 import time
 
 L   = os.listdir(source)
 L   = [v for v in L if os.path.isdir(source+v)]
-L   = [v+"/" for v in L if typeKey==v]
+L   = [v+"/" for v in L]
 
 print '\t'.join(L)
 
@@ -26,7 +17,7 @@ time.sleep(3)
 
 for typeFolder in L:
     L2 = os.listdir(source + typeFolder)
-    L2 = [v + "/" for v in L2 if dateKey<=v]
+    L2 = [v + "/" for v in L2]
     for dateFolder in L2:
         L3 = os.listdir(source+typeFolder+dateFolder)
         if L3 == []:
@@ -44,3 +35,4 @@ for typeFolder in L:
                         if not os.path.exists(target+typeFolder+dateFolder):
                             os.makedirs(target+typeFolder+dateFolder)
                         shutil.copyfile( source + typeFolder  + dateFolder  + fileName,  target + typeFolder  + dateFolder  + fileName )
+                    
