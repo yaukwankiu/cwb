@@ -52,11 +52,15 @@ import time
 # added 2013-08-21
 
 class Url_info:
-    def __init__(self, url_root, url_suffix, outputFolder, timeStringType):
+    def __init__(self, url_root, url_suffix, outputFolder, timeStringType, 
+                    #minutes=[0, 6, 12, 24, 30, 36, 42, 48, 54 ],
+                    minutes=[0,30],
+                    ):
         self.url_root       = url_root
         self.url_suffix     = url_suffix
         self.outputFolder   = outputFolder
         self.timeStringType =  timeStringType
+        self.minutes        = minutes
 ########################################################################################
 # default parameters and settings - CHANGE THESE TO GET SPECIFIC RESULTS
 
@@ -199,7 +203,9 @@ url_info_list.append(Url_info("http://www.cwb.gov.tw/V7/observe/rainfall/Data/hq
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01",
                               url_suffix=".pdf",
                               outputFolder="fcst",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
 
 #   2014-07-25
 
@@ -207,37 +213,49 @@ url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/UVI/Data/UVI",
                               url_suffix=".png",
                               outputFolder="uvi",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
 
 #http://www.cwb.gov.tw/V7/observe/real/Data/Real_C.png
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_C",
                               url_suffix=".png",
                               outputFolder="real_c",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
                               
 #http://www.cwb.gov.tw/V7/observe/real/Data/Real_E.png
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_E",
                               url_suffix=".png",
                               outputFolder="real_e",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
                               
 #http://www.cwb.gov.tw/V7/observe/real/Data/Real_I.png
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_I",
                               url_suffix=".png",
                               outputFolder="real_i",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
                               
 #http://www.cwb.gov.tw/V7/observe/real/Data/Real_N.png
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_N",
                               url_suffix=".png",
                               outputFolder="real_n",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
                               
 #http://www.cwb.gov.tw/V7/observe/real/Data/Real_S.png
 url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/Data/Real_S",
                               url_suffix=".png",
                               outputFolder="real_s",
-                              timeStringType="fcst"))
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
 
 
 #   end charts
@@ -255,12 +273,16 @@ for ch in regionalLetters:
     seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
                                   url_suffix=".html",
                                   outputFolder="sea_%s" %ch,
-                                  timeStringType="fcst"))
+                                  timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
 
     seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
                                   url_suffix=".png",
                                   outputFolder="sea_%s" %ch,
-                                  timeStringType="fcst"))
+                                  timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
 
 
 url_info_list += seaTemperatureCharts
@@ -305,14 +327,18 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
     return returnvalue
 
 def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix, 
-                 outputfolder=outputfolder, type="radar"):
+                 outputfolder=outputfolder, minutes=[0, 6, 12, 24, 30, 36, 42, 48, 54 ],    #2014-07-25
+                 type="radar"):
     try:
+        onceAdayOnly = False #setting the flag
         for hour in range(24):
+            if onceAdayOnly:
+                break
             #for minute in [0, 7, 15, 22, 30, 37, 45,52 ]:
-            for minute in [0, 6, 12, 24, 30, 36, 42, 48, 54 ]:  #2014-07-25
-                #if (minute == 15 or minute ==45) and \
-                #    (type == "rainfall1" or type =="rainfall2" or type =="satellite"):
-                #    continue                        # no data
+            for minute in minutes:  #2014-07-25
+                if minute <0 :
+                    onceAdayOnly =True
+                    break               # set the minutes to [0, -999] if you want to download it once for the day
                 if type == "radar":
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                 elif type == "satellite":           # 2013-05-20-15-30
@@ -374,26 +400,35 @@ def main(url_date=url_date):
     downloadoneday(url_root=url_root2, url_date=url_date, url_suffix=url_suffix2, 
                         outputfolder=outputfolder2, type="radar")
     downloadoneday(url_root=url_root3, url_date=url_date, url_suffix=url_suffix3, 
-                        outputfolder=outputfolder3, type="satellite")
+                        outputfolder=outputfolder3, minutes = [0,30],
+                        type="satellite")
     downloadoneday(url_root=url_root4, url_date=url_date, url_suffix=url_suffix4, 
-                        outputfolder=outputfolder4, type="satellite")
+                        outputfolder=outputfolder4, minutes = [0,30],
+                        type="satellite")
                         
     downloadoneday(url_root=url_root5, url_date=url_date, url_suffix=url_suffix5, 
-                        outputfolder=outputfolder5, type="satellite")
+                        outputfolder=outputfolder5, 
+                        minutes = [0,30],
+                        type="satellite")
                         
     downloadoneday(url_root=url_root6, url_date=url_date, url_suffix=url_suffix6, 
-                        outputfolder=outputfolder6, type="satellite")
+                        outputfolder=outputfolder6, minutes = [0,30],
+                        type="satellite")
     downloadoneday(url_root=url_root7, url_date=url_date, url_suffix=url_suffix7, 
-                        outputfolder=outputfolder7, type="temperature")
+                        outputfolder=outputfolder7,minutes = [0,30],
+                        type="temperature")
     downloadoneday(url_root=url_root8, url_date=url_date, url_suffix=url_suffix8, 
-                        outputfolder=outputfolder8, type="rainfall1")
+                        outputfolder=outputfolder8, minutes = [0,30],
+                        type="rainfall1")
     downloadoneday(url_root=url_root9, url_date=url_date, url_suffix=url_suffix9, 
-                        outputfolder=outputfolder9, type="rainfall2")
+                        outputfolder=outputfolder9,minutes = [0,30],
+                         type="rainfall2")
     downloadoneday(url_root=url_root10, url_date=url_date, url_suffix=url_suffix10, 
-                        outputfolder=outputfolder10, type=timeStringType10)
+                        outputfolder=outputfolder10,minutes = [0,30],
+                         type=timeStringType10)
     for u in url_info_list:
         downloadoneday(url_root=u.url_root, url_date=url_date, url_suffix=u.url_suffix, 
-                        outputfolder=u.outputFolder, type=u.timeStringType)
+                        outputfolder=u.outputFolder, type=u.timeStringType, minutes=u.minutes)
         
 
 
