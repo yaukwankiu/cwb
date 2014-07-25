@@ -4,7 +4,8 @@
 *.py~
 *.txt
 *.pyc
-downloadpics_*.*
+#*_.*
+#downloadpics_*.*
 downloadpicsTest*.*
 downloadpicstoday.*
 downloadpicsyesterday*.*
