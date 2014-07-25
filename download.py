@@ -335,9 +335,9 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
 
 def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix, 
                  outputFolder=outputFolder, minutes=[0, 6, 12, 24, 30, 36, 42, 48, 54 ],    #2014-07-25
-                 type="radar"):
+                 chartType="radar"):
     onceAdayOnly = False #setting the flag
-    #print type, url_date, url_suffix
+    #print chartType, url_date, url_suffix
     try:
         for hour in range(24):
             if onceAdayOnly:
@@ -350,25 +350,25 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     onceAdayOnly =True
                     break               # set the minutes to [0, -999] if you want to download it once for the day
                 #print 'checkpoint 1' #debug
-                if type == "radar":
+                if chartType == "radar":
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
-                elif type == "satellite":           # 2013-05-20-15-30
+                elif chartType == "satellite":           # 2013-05-20-15-30
                     timestring = "-" + ("0"+str(hour))[-2:] + "-" + ("00"+str(minute))[-2:]
-                elif type == "temperature":         # "2013-05-20_1300"
+                elif chartType == "temperature":         # "2013-05-20_1300"
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
-                elif type == "rainfall2":           # "2013-05-20_1530"
+                elif chartType == "rainfall2":           # "2013-05-20_1530"
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
-                elif type == "rainfall1":           # "520100" for 2013-05-20 10:00 - the odd man out
+                elif chartType == "rainfall1":           # "520100" for 2013-05-20 10:00 - the odd man out
                     timestring = ("0"+str(hour))[-2:] + str(minute)[0]
-                elif type =="fcst" or type=='sea':
+                elif chartType =="fcst" or chartType=='sea':
                     timestring = ""                 # http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
                     
-                if type =="fcst" or type=='sea':
+                if chartType =="fcst" or chartType=='sea':
                     url = url_root + timestring + url_suffix        #2014-07-22
                 else:
                     url = url_root + url_date + timestring + url_suffix
 
-                if type == "rainfall1":           # "520153" for 2013-05-20 15:30, 
+                if chartType == "rainfall1":           # "520153" for 2013-05-20 15:30, 
                                                   # "520010" for 2013-05-20 01:00, 
                                                   # "520100" for 2013-05-20 10:00 - the odd man out
                                                   # "a02090" for 2013-10-02 09:00
@@ -386,10 +386,10 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     #end debug
                 #print 'checkpoint 2' #debug
 
-                if type == "fcst":
+                if chartType == "fcst":
                     #to_filename = "SFC01" + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-22
                     to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":","") + url_suffix   #2014-07-25
-                elif type =='sea':
+                elif chartType =='sea':
                     to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":","")[:10] + url_suffix   #2014-07-25
                 else:
                     to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
@@ -401,13 +401,13 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
 
     except:
         print "--------------------------------------------------------"
-        print "Error!!!! During", type, url_root + url_suffix
+        print "Error!!!! During", chartType, url_root + url_suffix
         
 
 def downloadoneday2(url_info, url_date=url_date):
     u = url_info
     return downloadoneday(url_root=u.url_root, url_date=url_date, url_suffix=u.url_suffix, 
-                        outputFolder=u.outputFolder, type=u.timeStringType)
+                        outputFolder=u.outputFolder, chartType=u.timeStringType)
 
         
 ########################################################################################
@@ -416,39 +416,39 @@ def main(url_date=url_date):
 
     """ """
     downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
-                        outputFolder=outputFolder, type="radar")
+                        outputFolder=outputFolder, chartType="radar")
     downloadoneday(url_root=url_root2, url_date=url_date, url_suffix=url_suffix2, 
-                        outputFolder=outputFolder2, type="radar")
+                        outputFolder=outputFolder2, chartType="radar")
     downloadoneday(url_root=url_root3, url_date=url_date, url_suffix=url_suffix3, 
                         outputFolder=outputFolder3, minutes = [0,30],
-                        type="satellite")
+                        chartType="satellite")
     downloadoneday(url_root=url_root4, url_date=url_date, url_suffix=url_suffix4, 
                         outputFolder=outputFolder4, minutes = [0,30],
-                        type="satellite")
+                        chartType="satellite")
                         
     downloadoneday(url_root=url_root5, url_date=url_date, url_suffix=url_suffix5, 
                         outputFolder=outputFolder5, 
                         minutes = [0,30],
-                        type="satellite")
+                        chartType="satellite")
                         
     downloadoneday(url_root=url_root6, url_date=url_date, url_suffix=url_suffix6, 
                         outputFolder=outputFolder6, minutes = [0,30],
-                        type="satellite")
+                        chartType="satellite")
     downloadoneday(url_root=url_root7, url_date=url_date, url_suffix=url_suffix7, 
                         outputFolder=outputFolder7,minutes = [0,30],
-                        type="temperature")
+                        chartType="temperature")
     downloadoneday(url_root=url_root8, url_date=url_date, url_suffix=url_suffix8, 
                         outputFolder=outputFolder8, minutes = [0,30],
-                        type="rainfall1")
+                        chartType="rainfall1")
     downloadoneday(url_root=url_root9, url_date=url_date, url_suffix=url_suffix9, 
                         outputFolder=outputFolder9,minutes = [0,30],
-                         type="rainfall2")
+                         chartType="rainfall2")
     downloadoneday(url_root=url_root10, url_date=url_date, url_suffix=url_suffix10, 
                         outputFolder=outputFolder10,minutes = [0,30],
-                         type=timeStringType10)
+                         chartType=timeStringType10)
     for u in url_info_list:
         downloadoneday(url_root=u.url_root, url_date=url_date, url_suffix=u.url_suffix, 
-                        outputFolder=u.outputFolder, type=u.timeStringType, minutes=u.minutes)
+                        outputFolder=u.outputFolder, chartType=u.timeStringType, minutes=u.minutes)
         
 
 
