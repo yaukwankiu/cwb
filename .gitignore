@@ -2,3 +2,6 @@
 *.png
 *.*~
 *.py~
+*.txt
+*.pdf
+*.html
