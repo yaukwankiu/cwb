@@ -90,47 +90,47 @@ defaultReloadMode = False
 # http://cwb.gov.tw/V7/observe/radar/Data/MOS_1024/2013-05-19_0015.MOS0.jpg  (with relief)
 url_root = "http://cwb.gov.tw/V7/observe/radar/Data/MOS_1024/"      
 url_suffix= ".MOS0.jpg"
-outputfolder = "charts"
+outputFolder = "charts"
 
 # http://cwb.gov.tw/V7/observe/radar/Data/MOS2_1024/2013-05-20_0045.2MOS0.jpg (without relief)
 url_root2 = "http://cwb.gov.tw/V7/observe/radar/Data/MOS2_1024/"   
 url_suffix2= ".2MOS0.jpg"
-outputfolder2 = "charts2"
+outputFolder2 = "charts2"
 
 # http://cwb.gov.tw/V7/observe/satellite/Data/sbo/sbo-2013-05-20-15-30.jpg (visible spectrum)
 url_root3 = "http://cwb.gov.tw/V7/observe/satellite/Data/sbo/sbo-"    
 url_suffix3= ".jpg"
-outputfolder3 = "satellite1"
+outputFolder3 = "satellite1"
 
 # http://cwb.gov.tw/V7/observe/satellite/Data/s3p/s3p-2013-05-20-15-30.jpg (colours)
 url_root4 = "http://cwb.gov.tw/V7/observe/satellite/Data/s3p/s3p-"    
 url_suffix4= ".jpg"
-outputfolder4 = "satellite2"
+outputFolder4 = "satellite2"
 
 # http://cwb.gov.tw/V7/observe/satellite/Data/s3q/s3q-2013-05-20-15-30.jpg (enhanced colours)
 url_root5 = "http://cwb.gov.tw/V7/observe/satellite/Data/s3q/s3q-"    
 url_suffix5= ".jpg"
-outputfolder5 = "satellite3"
+outputFolder5 = "satellite3"
 
 # http://cwb.gov.tw/V7/observe/satellite/Data/s3o/s3o-2013-05-20-15-30.jpg (black and white)
 url_root6 = "http://cwb.gov.tw/V7/observe/satellite/Data/s3o/s3o-"    
 url_suffix6= ".jpg"
-outputfolder6 = "satellite4"
+outputFolder6 = "satellite4"
 
 # http://cwb.gov.tw/V7/observe/temperature/Data/2013-05-20_1300.GTP.jpg  (temperature)
 url_root7 = "http://cwb.gov.tw/V7/observe/temperature/Data/"    
 url_suffix7= ".GTP.jpg"
-outputfolder7 = "temperature"
+outputFolder7 = "temperature"
 
 # http://cwb.gov.tw/V7/observe/rainfall/Data/hk520153.jpg               (rainfall -small grid)
 url_root8 = "http://cwb.gov.tw/V7/observe/rainfall/Data/hk"    
 url_suffix8= ".jpg"
-outputfolder8 = "rainfall1"
+outputFolder8 = "rainfall1"
 
 # http://cwb.gov.tw/V7/observe/rainfall/Data/2013-05-20_1530.QZJ.grd2.jpg (rainfall -large gird)
 url_root9 = "http://cwb.gov.tw/V7/observe/rainfall/Data/"    
 url_suffix9= ".QZJ.grd2.jpg"
-outputfolder9 = "rainfall2"
+outputFolder9 = "rainfall2"
 # 
 
 ############  ####################  ####################  ################################
@@ -140,7 +140,7 @@ outputfolder9 = "rainfall2"
 # http://www.cwb.gov.tw/V7/observe/satellite/Data/HSAO/HSAO-2013-08-21-17-30.jpg  (high definition south-east asia - visible light)
 url_root10 = "http://www.cwb.gov.tw/V7/observe/satellite/Data/HSAO/HSAO-"    
 url_suffix10= ".jpg"
-outputfolder10 = "hsao"
+outputFolder10 = "hsao"
 timeStringType10         = "satellite"
 
 
@@ -276,14 +276,13 @@ for ch in regionalLetters:
                                   timeStringType="fcst",
                               minutes=[0,-1],
                               ))
-
-    seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
+    
+    seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/charts/sea_%s" %ch,
                                   url_suffix=".png",
                                   outputFolder="sea_%s" %ch,
                                   timeStringType="fcst",
                               minutes=[0,-1],
                               ))
-
 
 url_info_list += seaTemperatureCharts
 #   end htmls
@@ -312,8 +311,16 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
         else:
             print to_path,  'file broken! - removed'
     try:
-        f = urllib.urlretrieve(url, to_path)
-        if os.path.getsize(to_path) < 6000:
+        try:
+            f = urllib.urlretrieve(url, to_path)
+        except:
+            print "using urllib2"
+            f = urllib2.urlopen(url)
+            x = f.read()
+            open(to_path, 'w').write(x)
+
+        if (url.endswith('.png') or url.endswith('.jpg')) and os.path.getsize(to_path) < 1000 \
+            and 'sea' not in url[:-20]: #hack
             os.remove(to_path)
             print url, '-->not found--> ' + to_path 
             returnvalue = 0
@@ -327,18 +334,22 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
     return returnvalue
 
 def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix, 
-                 outputfolder=outputfolder, minutes=[0, 6, 12, 24, 30, 36, 42, 48, 54 ],    #2014-07-25
+                 outputFolder=outputFolder, minutes=[0, 6, 12, 24, 30, 36, 42, 48, 54 ],    #2014-07-25
                  type="radar"):
+    onceAdayOnly = False #setting the flag
+    #print type, url_date, url_suffix
     try:
-        onceAdayOnly = False #setting the flag
         for hour in range(24):
             if onceAdayOnly:
+                print outputFolder, "once a day only"
+                #time.sleep(.2)   #throttle
                 break
             #for minute in [0, 7, 15, 22, 30, 37, 45,52 ]:
             for minute in minutes:  #2014-07-25
                 if minute <0 :
                     onceAdayOnly =True
                     break               # set the minutes to [0, -999] if you want to download it once for the day
+                #print 'checkpoint 1' #debug
                 if type == "radar":
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                 elif type == "satellite":           # 2013-05-20-15-30
@@ -370,24 +381,31 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     #url = url_root + monthString + str(int(url_date[8:10])) + timestring + url_suffix   # doesn't work any more 2013-10-01
                     url = url_root + monthString + url_date[8:10] + timestring + url_suffix   # added 2013-10-01
                     #debug
-                    #print url
+                    print url
                     #time.sleep(1)
                     #end debug
+                #print 'checkpoint 2' #debug
+
                 if type == "fcst":
                     #to_filename = "SFC01" + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-22
-                    to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-25
+                    to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":","") + url_suffix   #2014-07-25
                 else:
                     to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
-                download(url=url, to_filename=to_filename, url_date=url_date, folder=outputfolder)
+                #print 'checkpoint 3' #debug
+                download(url=url, to_filename=to_filename, url_date=url_date, folder=outputFolder)
+
+        if len(minutes)==1:
+            time.sleep(.5)
+
     except:
         print "--------------------------------------------------------"
-        print "Error!!!! During", type, url_root
+        print "Error!!!! During", type, url_root + url_suffix
         
 
 def downloadoneday2(url_info, url_date=url_date):
     u = url_info
     return downloadoneday(url_root=u.url_root, url_date=url_date, url_suffix=u.url_suffix, 
-                        outputfolder=u.outputFolder, type=u.timeStringType)
+                        outputFolder=u.outputFolder, type=u.timeStringType)
 
         
 ########################################################################################
@@ -396,39 +414,39 @@ def main(url_date=url_date):
 
     """ """
     downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
-                        outputfolder=outputfolder, type="radar")
+                        outputFolder=outputFolder, type="radar")
     downloadoneday(url_root=url_root2, url_date=url_date, url_suffix=url_suffix2, 
-                        outputfolder=outputfolder2, type="radar")
+                        outputFolder=outputFolder2, type="radar")
     downloadoneday(url_root=url_root3, url_date=url_date, url_suffix=url_suffix3, 
-                        outputfolder=outputfolder3, minutes = [0,30],
+                        outputFolder=outputFolder3, minutes = [0,30],
                         type="satellite")
     downloadoneday(url_root=url_root4, url_date=url_date, url_suffix=url_suffix4, 
-                        outputfolder=outputfolder4, minutes = [0,30],
+                        outputFolder=outputFolder4, minutes = [0,30],
                         type="satellite")
                         
     downloadoneday(url_root=url_root5, url_date=url_date, url_suffix=url_suffix5, 
-                        outputfolder=outputfolder5, 
+                        outputFolder=outputFolder5, 
                         minutes = [0,30],
                         type="satellite")
                         
     downloadoneday(url_root=url_root6, url_date=url_date, url_suffix=url_suffix6, 
-                        outputfolder=outputfolder6, minutes = [0,30],
+                        outputFolder=outputFolder6, minutes = [0,30],
                         type="satellite")
     downloadoneday(url_root=url_root7, url_date=url_date, url_suffix=url_suffix7, 
-                        outputfolder=outputfolder7,minutes = [0,30],
+                        outputFolder=outputFolder7,minutes = [0,30],
                         type="temperature")
     downloadoneday(url_root=url_root8, url_date=url_date, url_suffix=url_suffix8, 
-                        outputfolder=outputfolder8, minutes = [0,30],
+                        outputFolder=outputFolder8, minutes = [0,30],
                         type="rainfall1")
     downloadoneday(url_root=url_root9, url_date=url_date, url_suffix=url_suffix9, 
-                        outputfolder=outputfolder9,minutes = [0,30],
+                        outputFolder=outputFolder9,minutes = [0,30],
                          type="rainfall2")
     downloadoneday(url_root=url_root10, url_date=url_date, url_suffix=url_suffix10, 
-                        outputfolder=outputfolder10,minutes = [0,30],
+                        outputFolder=outputFolder10,minutes = [0,30],
                          type=timeStringType10)
     for u in url_info_list:
         downloadoneday(url_root=u.url_root, url_date=url_date, url_suffix=u.url_suffix, 
-                        outputfolder=u.outputFolder, type=u.timeStringType, minutes=u.minutes)
+                        outputFolder=u.outputFolder, type=u.timeStringType, minutes=u.minutes)
         
 
 
@@ -470,4 +488,3 @@ if __name__ == '__main__':
     #main(url_date='2013-07-07')
     print "\nTime spent:", int(time.time()) - time0
     print "Time now:", time.asctime()
-
