@@ -273,14 +273,14 @@ for ch in regionalLetters:
     seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/tables/sea_%s" %ch,
                                   url_suffix=".html",
                                   outputFolder="sea_%s" %ch,
-                                  timeStringType="fcst",
+                                  timeStringType="sea",
                               minutes=[0,-1],
                               ))
     
     seaTemperatureCharts.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/marine/sst_report/cht/charts/sea_%s" %ch,
                                   url_suffix=".png",
                                   outputFolder="sea_%s" %ch,
-                                  timeStringType="fcst",
+                                  timeStringType="sea",
                               minutes=[0,-1],
                               ))
 
@@ -360,10 +360,10 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                 elif type == "rainfall1":           # "520100" for 2013-05-20 10:00 - the odd man out
                     timestring = ("0"+str(hour))[-2:] + str(minute)[0]
-                elif type =="fcst":
+                elif type =="fcst" or type=='sea':
                     timestring = ""                 # http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
                     
-                if type =="fcst":
+                if type =="fcst" or type=='sea':
                     url = url_root + timestring + url_suffix        #2014-07-22
                 else:
                     url = url_root + url_date + timestring + url_suffix
@@ -389,6 +389,8 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                 if type == "fcst":
                     #to_filename = "SFC01" + "_" + time.asctime().replace(" ","_").replace(":",".") + url_suffix   #2014-07-22
                     to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":","") + url_suffix   #2014-07-25
+                elif type =='sea':
+                    to_filename =  outputFolder + "_" + time.asctime().replace(" ","_").replace(":","")[:10] + url_suffix   #2014-07-25
                 else:
                     to_filename = url_date +"_" +("0"+str(hour))[-2:] +("00"+str(minute))[-2:] +url_suffix
                 #print 'checkpoint 3' #debug
