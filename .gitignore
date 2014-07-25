@@ -4,8 +4,7 @@
 *.py~
 *.txt
 *.pyc
-#*_.*
-#downloadpics_*.*
+downloadpics_*.*
 downloadpicsTest*.*
 downloadpicstoday.*
 downloadpicsyesterday*.*
@@ -30,3 +29,4 @@ sco/
 temp/
 temperature/
 videos/
+
