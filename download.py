@@ -69,12 +69,10 @@ class Url_info:
 # e.g. 2013,5,20 -> 2013-05-20
 today           = date.today()
 yesterday       = today - timedelta(1)
-
 year, month, day= yesterday.year, yesterday.month, yesterday.day ###### <--------UNCOMMENT THIS TO GET YESTERDAY  #########
 url_date_yesterday = str(year) + "-" + ("0"+str(month))[-2:] + "-" + ("0"+str(day))[-2:]  # for yesterday
 year, month, day= today.year, today.month, today.day   ###### <--------UNCOMMENT THIS TO GET TODAY  #########
 url_date_today = str(year) + "-" + ("0"+str(month))[-2:] + "-" + ("0"+str(day))[-2:]  # for today
-
 url_date=url_date_yesterday
 
 #url_date = "2013-05-18"   ###### <-------- UNCOMMENT THIS TO GET A SPECIFIC DATE  #########
@@ -306,10 +304,11 @@ def download(url, to_filename, url_date=url_date, folder=".", reload=defaultRelo
     if os.path.isfile(to_path) and reload==False:
         if verbose:
             print to_path, ' <--- already exists!!'
-        if os.path.getsize(to_path) >= 6000:
-            return 0.5
-        else:
+        if os.path.getsize(to_path)< 2000  and ('.jpg' in to_path or '.png' in to_path):
             print to_path,  'file broken! - removed'
+        else:
+            return 0.5
+
     try:
         try:
             f = urllib.urlretrieve(url, to_path)
