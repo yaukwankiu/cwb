@@ -4,6 +4,8 @@
 *.py~
 *.txt
 *.pyc
+*.html
+*.pdf
 downloadpics_*.*
 downloadpicsTest*.*
 downloadpicstoday.*

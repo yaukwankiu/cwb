@@ -19,6 +19,8 @@ for typeFolder in L:
     L2 = os.listdir(source + typeFolder)
     L2 = [v + "/" for v in L2]
     for dateFolder in L2:
+        if dataFolder.startswith('.'):
+            continue # /.git/     folder
         L3 = os.listdir(source+typeFolder+dateFolder)
         if L3 == []:
             continue
