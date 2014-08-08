@@ -3,13 +3,18 @@
 source = "d:/CWB/"
 target = "f:/CWB/"
 dryRun = False
+key1 = ""
+key2 = ""
+nokey = None
 import os
 import shutil
 import time
 
 L   = os.listdir(source)
 L   = [v for v in L if os.path.isdir(source+v) and not ('.git' in v) and not ('allinone') in v]
-L   = [v+"/" for v in L]
+L   = [v+"/" for v in L if key1 in v and key2 in v]
+if nokey != None:
+    L = [v for v in L if not (nokey in v)]
 
 print '\t'.join(L)
 
