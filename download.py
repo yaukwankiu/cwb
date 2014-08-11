@@ -256,6 +256,33 @@ url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/observe/real/
                               ))
 
 
+#http://www.cwb.gov.tw/V7/forecast/fcst/Data/2014-0811-0600_SFCcombo.jpg
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst/Data/",
+                              url_suffix="_SFCcombo.jpg",
+                              outputFolder="SFCcombo",
+                              timeStringType="sfccombo",
+                              minutes=[0],
+                              ))
+
+#http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip12.jpg
+
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip12",
+                              url_suffix=".jpg",
+                              outputFolder="qpf12",
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
+
+
+#http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip24.jpg
+url_info_list.append(Url_info(url_root = "http://www.cwb.gov.tw/V7/forecast/fcst/Data/QPF_ChFcstPrecip24",
+                              url_suffix=".jpg",
+                              outputFolder="qpf24",
+                              timeStringType="fcst",
+                              minutes=[0,-1],
+                              ))
+
+
 #   end charts
 ############################################################################################################################################
 
@@ -359,14 +386,20 @@ def downloadoneday(url_root=url_root, url_date=url_date, url_suffix=url_suffix,
                     timestring = "_" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                 elif chartType == "rainfall1":           # "520100" for 2013-05-20 10:00 - the odd man out
                     timestring = ("0"+str(hour))[-2:] + str(minute)[0]
-                elif chartType =="fcst" or chartType=='sea':
-                    timestring = ""                 # http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
+                elif chartType =="fcst" or chartType=='sea': # http://www.cwb.gov.tw/V7/forecast/fcst/Data/SFC01.pdf
+                    timestring = ""                 
+                elif chartType == "sfccombo":        #http://www.cwb.gov.tw/V7/forecast/fcst/Data/2014-0811-0600_SFCcombo.jpg
+                    timestring = url_date[0:4] + "-" + url_date[5:7] + url_date[8:10] + "-" + ("0"+str(hour))[-2:] + ("00"+str(minute))[-2:]
                     
-                if chartType =="fcst" or chartType=='sea':
+                if chartType =="fcst" or chartType=='sea' or chartType=='sfccombo':
                     url = url_root + timestring + url_suffix        #2014-07-22
+
                 else:
                     url = url_root + url_date + timestring + url_suffix
-
+                
+                #if chartType == 'sfccombo':
+                #    print url
+                #    time.sleep(10)   # debug
                 if chartType == "rainfall1":           # "520153" for 2013-05-20 15:30, 
                                                   # "520010" for 2013-05-20 01:00, 
                                                   # "520100" for 2013-05-20 10:00 - the odd man out
