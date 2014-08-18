@@ -509,7 +509,11 @@ if __name__ == '__main__':
                 time.sleep(86400-timeSpent)
         except ValueError:
             for url_date in sys.argv[1:]:
-                main(url_date)
+                if url_date== 'today':
+                    print "today = ", url_date_today
+                    main(url_date_today)
+                else:                    
+                    main(url_date)
     else:
         print "\n\nYESTERDAY:\n"
         main(url_date=url_date_yesterday)
