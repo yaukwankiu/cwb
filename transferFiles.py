@@ -3,9 +3,12 @@
 source = "d:/CWB/"
 target = "f:/CWB/"
 dryRun = False
-key1 = ""
+key1=""
 key2 = ""
 nokey = None
+#key1 = "hs1"
+#nokey='charts2'
+
 import os
 import shutil
 import time
