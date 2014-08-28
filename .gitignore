@@ -5,6 +5,10 @@
 *.txt
 *.pyc
 *.html
+*.htm
+*.css
+*.js
+*.gif
 *.pdf
 downloadpics_*.*
 downloadpicsTest*.*
