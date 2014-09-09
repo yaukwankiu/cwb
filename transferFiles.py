@@ -3,9 +3,16 @@
 source = "d:/CWB/"
 target = "f:/CWB/"
 dryRun = False
-key1="charts"
-key2 = "hs1"
-nokey = None
+keys=["charts",'fcst', 'hs1', 'hsao','hq', 'qpf', 'rainfall', "satellite", 'sco', "sea", "temper", "s0",'uvi',]
+nokeys = ['allinone', '.git',]
+
+print "keys:", keys
+print "nokeys:", nokeys
+print "transferring:", source, "->", target
+print "sleeping 3 seconds"
+import time
+time.sleep(3)
+
 #key1 = "hs1"
 #nokey='charts2'
 
@@ -14,20 +21,25 @@ import shutil
 import time
 
 L   = os.listdir(source)
-L   = [v for v in L if os.path.isdir(source+v) and not ('.git' in v) and not ('allinone') in v]
-L   = [v+"/" for v in L if key1 in v or key2 in v]
-if nokey != None:
+for nokey in nokeys:
     L = [v for v in L if not (nokey in v)]
+    L = [v for v in L if os.path.isdir(v)]
 
-print '\t'.join(L)
-
+L1  = []
+for key in keys:
+    L1.extend([v+"/" for v in L if key in v])
+L= L1
+print "L:", '\t'.join(L)
+print "sleeping 3 seconds"
 time.sleep(3)
 
 for typeFolder in L:
+    print "\n--------------------------\ntransferring", typeFolder
     L2 = os.listdir(source + typeFolder)   
     #print L2 #debug
     L2 = [v + "/" for v in L2 if not ('.git' in v)]
     for dateFolder in L2:
+        print '\n............\ntransferring', dateFolder
         if '.git' in dateFolder:
             continue # /.git/     folder
         L3 = os.listdir(source+typeFolder+dateFolder)
