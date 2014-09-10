@@ -52,7 +52,9 @@ def main(folderName='hs1q', startingFrom="", verbose=True, overWrite=True, loopi
     else:
         countDown = 1
 
-    print "folderName, looping, startingFrom:", folderName, looping, startingFrom
+    print "\nFolderName, looping, startingFrom:", folderName, looping, startingFrom, '\n'
+    print 'sleeping 4 seconds'
+    time.sleep(4)
     while countDown != 0:
         timeString = int(time.time())
         print 'copying folder', folderName
