@@ -42,6 +42,8 @@ for typeFolder in L:
         print '\n............\ntransferring', dateFolder
         if '.git' in dateFolder:
             continue # /.git/     folder
+        if dateFolder[0] not in ['1','2']:
+            continue  #doesn't start with a date
         L3 = os.listdir(source+typeFolder+dateFolder)
         if L3 == []:
             continue
