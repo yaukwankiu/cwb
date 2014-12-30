@@ -1,14 +1,19 @@
 # from source /CWB/ folder to target /CWB/ folder
 
-source = "d:/CWB/"
-target = "f:/CWB/"
+#source = "d:/CWB/" ; target = "f:/CWB/"
+source = "d:/CWB/" ; target = "g:/CWB/"
+
 dryRun = False
 keys=["charts",'fcst', 'hs1', 'hsao','hq', 'qpf', 'rainfall', "satellite", 'sco', "sea", "temper", "s0",'uvi',]
+#keys=['charts2']
 nokeys = ['allinone', '.git',]
+sinceTime = '2014-11-29'
+#sinceTime =''
 
 print "keys:", keys
 print "nokeys:", nokeys
 print "transferring:", source, "->", target
+print 'since time:', sinceTime
 print "sleeping 3 seconds"
 import time
 time.sleep(3)
@@ -30,14 +35,14 @@ for key in keys:
     L1.extend([v+"/" for v in L if key in v])
 L= L1
 print "L:", '\t'.join(L)
-print "sleeping 3 seconds"
-time.sleep(3)
+print "sleeping 2 seconds"
+time.sleep(2)
 
 for typeFolder in L:
     print "\n--------------------------\ntransferring", typeFolder
     L2 = os.listdir(source + typeFolder)   
     #print L2 #debug
-    L2 = [v + "/" for v in L2 if not ('.git' in v)]
+    L2 = [v + "/" for v in L2 if not ('.git' in v) and v>=sinceTime]
     for dateFolder in L2:
         print '\n............\ntransferring', dateFolder
         if '.git' in dateFolder:
@@ -57,7 +62,7 @@ for typeFolder in L:
                 else:
                     print source + typeFolder  + dateFolder  + fileName , 
                     print "->",
-                    print target
+                    print target + typeFolder
                     if not dryRun:
                         if not os.path.exists(target+typeFolder+dateFolder):
                             os.makedirs(target+typeFolder+dateFolder)
